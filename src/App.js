@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Letter from './Letter.js';
 import './App.css';
 
 class App extends Component {
   render() {
+    const letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div id="keyboard">
+        {
+          letters.map((letter) => (<Letter letter={letter} isUsed={false} />))
+        }
+        </div>
       </div>
     );
   }

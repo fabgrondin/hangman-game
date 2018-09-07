@@ -1,0 +1,12 @@
+#keyboard > .letter {
+  font-size: 2em;
+  width: 50px;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  border: 1px solid #000;
+}
+
+#keyboard > .letter > span {
+  margin: auto;
+}
