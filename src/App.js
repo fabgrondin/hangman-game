@@ -3,6 +3,10 @@ import Letter from './Letter.js';
 import './App.css';
 
 class App extends Component {
+  state = {lettersUsed: new Set()}
+  isLetterUsed(letter) {
+    return this.state.lettersUsed.has(letter);
+  }
   render() {
     const letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     return (
@@ -12,7 +16,7 @@ class App extends Component {
         </header>
         <div id="keyboard">
         {
-          letters.map((letter) => (<Letter letter={letter} isUsed={false} />))
+          letters.map((letter) => (<Letter letter={letter} isUsed={this.isLetterUsed(letter)} />))
         }
         </div>
       </div>
