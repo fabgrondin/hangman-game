@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Letter from './Letter.js';
 import './App.css';
 
-const wordsList = ["arbre", "chat", "abricot", "jupe", "tournevis"];
+const listOfWords = ["arbre", "chat", "abricot", "jupe", "tournevis"];
 
 class App extends Component {
   state = {
@@ -30,18 +30,30 @@ class App extends Component {
     )
   }
   getWordToFind() {
-    return wordsList[Math.floor(Math.random()*wordsList.length)].toUpperCase();
+    return listOfWords[Math.floor(Math.random()*listOfWords.length)].toUpperCase();
+  }
+  resetGame() {
+    this.setState({
+      word: this.getWordToFind(),
+      guesses: 0,
+      usedLetters: new Set()
+    })
   }
   render() {
     const letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    const wordDisplay = this.computeDisplay(this.state.word)
     return (
       <div className="App">
         <header className="App-header">
-          <h1 id="wordToFind">{this.computeDisplay(this.state.word)}</h1>
+          <h1 id="wordToFind">{wordDisplay}</h1>
+          <span>{this.state.guesses}</span>
         </header>
         <div id="keyboard">
         {
-          letters.map((letter,index) => (<Letter letter={letter} key={index} isUsed={this.state.usedLetters.has(letter)} onClick={this.checkLetter} />))
+          (wordDisplay.search("_") === -1) ?
+            (<button id="reset" onClick={()=>this.resetGame()}>Reset</button>)
+            :
+            letters.map((letter,index) => (<Letter letter={letter} key={index} isUsed={this.state.usedLetters.has(letter)} onClick={this.checkLetter} />))
         }
         </div>
       </div>

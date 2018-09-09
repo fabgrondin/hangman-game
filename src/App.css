@@ -14,6 +14,7 @@
 #keyboard {
   width: 50%;
   margin: auto;
+  padding: 20px;
   display: -webkit-flex;
   display: -ms-flex;
   display: flex;
