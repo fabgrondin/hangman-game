@@ -1,8 +1,8 @@
 import React from 'react'
 import './Letter.css'
 
-const Letter = ({ letter, isUsed }) => (
-  <div className={"letter" + (isUsed ? " used" : "")}>
+const Letter = ({ letter, isUsed, onClick }) => (
+  <div className={"letter" + (isUsed ? " used" : "")} onClick={()=>onClick(letter)}>
     <span>{letter}</span>
   </div>
 )
