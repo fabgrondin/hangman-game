@@ -1,18 +1,32 @@
-.App-header {
+header > h1 {
+  color: #222;
+  font-size: 2.5em;
+  text-align: center;
+}
+
+.word_wrapper {
   background-color: #222;
   height: 150px;
   padding: 20px;
   color: white;
+  position: relative;
 }
 
-#wordToFind {
-  font-size: 1.5em;
+#word_to_find {
+  font-size: 2em;
   letter-spacing: 0.5em;
   text-align: center;
 }
 
+#score {
+  position: absolute;
+  top: calc(50% - 1rem);
+  left: 20px;
+  width: 100px;
+}
+
 #keyboard {
-  width: 50%;
+  width: 85%;
   margin: auto;
   padding: 20px;
   display: -webkit-flex;
@@ -20,4 +34,19 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+@media (max-width: 780px) {
+  #keyboard {
+    width: 100%;
+  }
+}
+
+#reset {
+  border: 2px solid #222;
+  font-family: inherit;
+  font-size: 2em;
+  padding: 0.2em;
+  margin: 0.2em;
+  cursor: pointer;
 }

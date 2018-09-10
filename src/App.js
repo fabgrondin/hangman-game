@@ -2,27 +2,35 @@ import React, { Component } from 'react';
 import Letter from './Letter.js';
 import './App.css';
 
-const LIST_OF_WORDS = ["arbre", "chat", "abricot", "jupe", "tournevis"];
+import { LIST_OF_WORDS } from './listOfWords.js';
+
 const VISUAL_DELAY = 750
 
 class App extends Component {
   state = {
     word: this.getWordToFind(),
     guesses: 0,
+    score: 0,
     currentLetter: "",
     usedLetters: new Set()
   }
   checkLetter = (letter) => {
-    var {word, guesses, usedLetters} = this.state;
+    var {word, guesses, score, usedLetters} = this.state;
 
-    if (word.search(letter) !== -1) {
-      usedLetters.add(letter);
+    if (usedLetters.has(letter)) {
+      score-=2
+    }else if (word.search(letter) !== -1) {
+      usedLetters.add(letter)
+      score += 2
+    } else {
+      score--
     }
 
     guesses++;
 
     this.setState({
       guesses: guesses,
+      score: score,
       currentLetter: letter,
       usedLetters: usedLetters
     });
@@ -49,6 +57,7 @@ class App extends Component {
   resetGame() {
     this.setState({
       word: this.getWordToFind(),
+      score: 0,
       guesses: 0,
       usedLetters: new Set()
     })
@@ -56,16 +65,24 @@ class App extends Component {
   render() {
     const LETTERS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     const wordDisplay = this.computeDisplay(this.state.word)
+    const won = wordDisplay.search("_") === -1
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 id="wordToFind">{wordDisplay}</h1>
-          <span>{this.state.guesses}</span>
+        <header>
+          <h1>Jeu du pendu</h1>
         </header>
+        <div className="word_wrapper">
+          <h1 id="word_to_find">{wordDisplay}</h1>
+          <div id="score">
+            <span>Essais : {this.state.guesses}</span>
+            <br/>
+            <span>Score : {this.state.score}</span>
+          </div>
+        </div>
         <div id="keyboard">
         {
-          (wordDisplay.search("_") === -1) ?
-            (<button id="reset" onClick={()=>this.resetGame()}>Reset</button>)
+          won ?
+            (<button id="reset" onClick={()=>this.resetGame()}>Rejouer</button>)
             :
             LETTERS.map((letter,index) => (<Letter letter={letter} key={index} feedback={this.getFeedback(letter)} onClick={this.checkLetter} />))
         }
