@@ -14,32 +14,50 @@ class App extends Component {
     score: 0,
     errors: 0,
     currentLetter: "",
-    usedLetters: new Set()
+    usedLetters: new Set(),
+    won: false,
+    lost: false
+  }
+  componentDidMount() {
+    document.addEventListener("keypress", this.keypressFunc)
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keypress", this.keypressFunc)
   }
   checkLetter = (letter) => {
-    var {word, guesses, score, errors, usedLetters} = this.state;
+    var {word, guesses, score, errors, usedLetters, won, lost} = this.state;
 
-    if (usedLetters.has(letter)) {
-      score-=2
-    }else if (word.search(letter) !== -1) {
-      usedLetters.add(letter)
-      score += 2
+    if (won | lost) {
+      this.resetGame()
     } else {
-      score--
-      errors++
+      if (usedLetters.has(letter)) {
+        score-=2
+      }else if (word.search(letter) !== -1) {
+        usedLetters.add(letter)
+        score += 2
+      } else {
+        score--
+        errors++
+      }
+
+      guesses++
+
+      const wordDisplay = this.computeDisplay(this.state.word)
+      won = wordDisplay.search("_") === -1
+      lost = this.state.errors > 9
+
+      this.setState({
+        guesses: guesses,
+        score: score,
+        errors: errors,
+        currentLetter: letter,
+        usedLetters: usedLetters,
+        won: won,
+        lost: lost
+      });
+
+      setTimeout(() => this.setState({currentLetter: ""}), VISUAL_DELAY)
     }
-
-    guesses++
-
-    this.setState({
-      guesses: guesses,
-      score: score,
-      errors: errors,
-      currentLetter: letter,
-      usedLetters: usedLetters
-    });
-
-    setTimeout(() => this.setState({currentLetter: ""}), VISUAL_DELAY)
   }
   computeDisplay(phrase) {
     return phrase.replace(/\w/g,
@@ -58,27 +76,37 @@ class App extends Component {
   getWordToFind() {
     return LIST_OF_WORDS[Math.floor(Math.random()*LIST_OF_WORDS.length)].toUpperCase();
   }
+  keypressFunc = (event) => {
+    event.preventDefault()
+    var letter = event.key.toUpperCase()
+    var regexp = RegExp('[A-Z]')
+
+    if (regexp.test(letter)) {
+      this.checkLetter(letter)
+    }
+  }
   resetGame() {
     this.setState({
       word: this.getWordToFind(),
       score: 0,
       guesses: 0,
       errors: 0,
-      usedLetters: new Set()
+      usedLetters: new Set(),
+      won: false,
+      lost: false
     })
   }
   render() {
     const letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     const wordDisplay = this.computeDisplay(this.state.word)
-    const won = wordDisplay.search("_") === -1
-    const lost = this.state.errors > 9
+
     return (
       <div className="App">
         <header>
           <h1>Jeu du pendu</h1>
         </header>
         <div className="word_wrapper">
-          <h1 id="word_to_find">{ lost ? this.state.word : wordDisplay}</h1>
+          <h1 id="word_to_find">{ this.state.lost ? this.state.word : wordDisplay}</h1>
           <div id="score">
             <span>Essais : {this.state.guesses}</span>
             <br/>
@@ -87,10 +115,10 @@ class App extends Component {
         </div>
         <div id="keyboard">
         {
-          (won | lost) ?
+          (this.state.won | this.state.lost) ?
             (
               <div id="play_again">
-                <p>{ won ? "Gagné !" : "Perdu !"}</p>
+                <p>{ this.state.won ? "Gagné !" : "Perdu !"}</p>
                 <button id="reset" onClick={()=>this.resetGame()}>Rejouer</button>
               </div>
             )
