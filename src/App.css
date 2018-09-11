@@ -10,12 +10,16 @@ header > h1 {
   padding: 20px;
   color: white;
   position: relative;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
 }
 
 #word_to_find {
   font-size: 2em;
   letter-spacing: 0.5em;
   text-align: center;
+  margin: auto;
 }
 
 #score {
@@ -27,6 +31,7 @@ header > h1 {
 
 #keyboard {
   width: 85%;
+  height: 180px;
   margin: auto;
   padding: 20px;
   display: -webkit-flex;
@@ -42,11 +47,16 @@ header > h1 {
   }
 }
 
+#play_again > p {
+  text-align: center;
+  font-size: 2em;
+  margin: 0.5em;
+}
+
 #reset {
   border: 2px solid #222;
   font-family: inherit;
   font-size: 2em;
   padding: 0.2em;
-  margin: 0.2em;
   cursor: pointer;
 }

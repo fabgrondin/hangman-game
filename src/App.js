@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Letter from './Letter.js';
+import Letter from './Letter';
+import Canvas from './Canvas';
 import './App.css';
 
 import { LIST_OF_WORDS } from './listOfWords.js';
@@ -11,11 +12,12 @@ class App extends Component {
     word: this.getWordToFind(),
     guesses: 0,
     score: 0,
+    errors: 0,
     currentLetter: "",
     usedLetters: new Set()
   }
   checkLetter = (letter) => {
-    var {word, guesses, score, usedLetters} = this.state;
+    var {word, guesses, score, errors, usedLetters} = this.state;
 
     if (usedLetters.has(letter)) {
       score-=2
@@ -24,13 +26,15 @@ class App extends Component {
       score += 2
     } else {
       score--
+      errors++
     }
 
-    guesses++;
+    guesses++
 
     this.setState({
       guesses: guesses,
       score: score,
+      errors: errors,
       currentLetter: letter,
       usedLetters: usedLetters
     });
@@ -59,20 +63,22 @@ class App extends Component {
       word: this.getWordToFind(),
       score: 0,
       guesses: 0,
+      errors: 0,
       usedLetters: new Set()
     })
   }
   render() {
-    const LETTERS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    const letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     const wordDisplay = this.computeDisplay(this.state.word)
     const won = wordDisplay.search("_") === -1
+    const lost = this.state.errors > 9
     return (
       <div className="App">
         <header>
           <h1>Jeu du pendu</h1>
         </header>
         <div className="word_wrapper">
-          <h1 id="word_to_find">{wordDisplay}</h1>
+          <h1 id="word_to_find">{ lost ? this.state.word : wordDisplay}</h1>
           <div id="score">
             <span>Essais : {this.state.guesses}</span>
             <br/>
@@ -81,12 +87,18 @@ class App extends Component {
         </div>
         <div id="keyboard">
         {
-          won ?
-            (<button id="reset" onClick={()=>this.resetGame()}>Rejouer</button>)
+          (won | lost) ?
+            (
+              <div id="play_again">
+                <p>{ won ? "Gagné !" : "Perdu !"}</p>
+                <button id="reset" onClick={()=>this.resetGame()}>Rejouer</button>
+              </div>
+            )
             :
-            LETTERS.map((letter,index) => (<Letter letter={letter} key={index} feedback={this.getFeedback(letter)} onClick={this.checkLetter} />))
+            letters.map((letter,index) => (<Letter letter={letter} key={index} feedback={this.getFeedback(letter)} onClick={this.checkLetter} />))
         }
         </div>
+        <Canvas errors={this.state.errors} />
       </div>
     );
   }
