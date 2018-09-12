@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import './Canvas.css';
 
@@ -35,16 +36,10 @@ hangmanDraw[9].moveTo(180, 180);
 hangmanDraw[9].lineTo(150, 210);
 
 class Canvas extends Component {
-  state = {
-    errors: this.props.errors
-  }
-  componentWillReceiveProps({ errors }) {
-    this.setState({ errors })
-  }
   componentDidUpdate() {
     var canvas = document.getElementById("drawHangman")
     var ctx = canvas.getContext("2d")
-    var errors = this.state.errors
+    var errors = this.props.errors
 
     ctx.strokeStyle = "#222222"
     ctx.lineWidth = 5
@@ -54,13 +49,16 @@ class Canvas extends Component {
     for (let i=0; i < errors; i++) {
       ctx.stroke(hangmanDraw[i])
     }
-
   }
   render() {
     return (
-      <canvas id="drawHangman" width="300" height="300">{this.state.errors}</canvas>
+      <canvas id="drawHangman" width="300" height="300"></canvas>
     )
   }
+}
+
+Canvas.propTypes = {
+  errors: PropTypes.number.isRequired
 }
 
 export default Canvas

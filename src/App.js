@@ -26,10 +26,6 @@ class App extends Component {
   }
   checkLetter = (letter) => {
     var {word, guesses, score, errors, usedLetters, won, lost} = this.state;
-
-    if (won | lost) {
-      this.resetGame()
-    } else {
       if (usedLetters.has(letter)) {
         score-=2
       }else if (word.search(letter) !== -1) {
@@ -42,9 +38,9 @@ class App extends Component {
 
       guesses++
 
-      const wordDisplay = this.computeDisplay(this.state.word)
+      const wordDisplay = this.computeDisplay(word)
       won = wordDisplay.search("_") === -1
-      lost = this.state.errors > 9
+      lost = errors > 9
 
       this.setState({
         guesses: guesses,
@@ -58,7 +54,6 @@ class App extends Component {
 
       setTimeout(() => this.setState({currentLetter: ""}), VISUAL_DELAY)
     }
-  }
   computeDisplay(phrase) {
     return phrase.replace(/\w/g,
       (letter) => (this.state.usedLetters.has(letter) ? letter : '_')
@@ -77,12 +72,17 @@ class App extends Component {
     return LIST_OF_WORDS[Math.floor(Math.random()*LIST_OF_WORDS.length)].toUpperCase();
   }
   keypressFunc = (event) => {
+    const {won, lost} = this.state
     event.preventDefault()
-    var letter = event.key.toUpperCase()
-    var regexp = RegExp('[A-Z]')
+    if (won | lost) {
+      this.resetGame()
+    } else {
+      var letter = event.key.toUpperCase()
+      var regexp = RegExp('[A-Z]')
 
-    if (regexp.test(letter)) {
-      this.checkLetter(letter)
+      if (regexp.test(letter)) {
+        this.checkLetter(letter)
+      }
     }
   }
   resetGame() {
